@@ -1,10 +1,11 @@
 
 lista_tarefas = []
+lista_tarefas_concluidas = []
 
 class Tarefa:
     id = None
     descricao = None
-    prioridade = None
+    prioridade = None ## 1- Alta 2 - Media 3 - Baixa
     situacao = None
 
 def carregar_tarefas_teste():
@@ -67,12 +68,58 @@ def  concluir_tarefa():
             print(f"Tarefa com ID {tarefa.id} alterada para concluída com sucesso!\n")
             tarefa.situacao = False
             encontrada = True
+            lista_tarefas_concluidas.append(tarefa)
+            break
+
+    if not encontrada:
+        print("ID de tarefa inexistente!\n")
+
+def reabrir_tarefa():
+    print("*" * 40)
+    print("Concluir Tarefas\n")
+
+    tarefa = int(input("Informe o ID da tarefa que deseja reabrir: "))
+    encontrada = False
+
+    for tarefa in lista_tarefas_concluidas:
+        if tarefa.id == tarefa:
+            print(f"Tarefa com ID {tarefa.id} alterada para reaberta com sucesso!\n")
+            tarefa.situacao = False
+            encontrada = True
+            lista_tarefas.append(tarefa)
             break
 
     if not encontrada:
         print("ID de tarefa inexistente!\n")
 
 
+def editar_tarefa():
+    print("*" * 40)
+    print("Editar Tarefas\n")
+
+    tarefa = int(input("Informe o ID da tarefa que deseja editar: "))
+    encontrada = False
+
+    for tarefa in lista_tarefas:
+        if tarefa.id == tarefa:
+            print(f"ID: {tarefa.id:<5} | Descrição: {tarefa.descricao:<50} | Prioridade: {tarefa.situacao}")
+            descrição_nova = print(f"\nDescrição nova (0 para manter como está): \n")
+
+            if descrição_nova != '0':
+                tarefa.descricao = descrição_nova
+
+            prioridade_nova = print(f"\nPrioridade nova (0 para manter como está): \n")
+
+            if prioridade_nova != '0':
+                tarefa.prioridade = prioridade_nova
+
+            print(f"Tarefa com ID {tarefa.id} alterada para com sucesso!\n")
+            encontrada = True
+            break
+
+    if not encontrada:
+        print("ID de tarefa inexistente!\n")
+    
 while True:
     print("*" * 40)
     print("Menu de opções\n")
