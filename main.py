@@ -1,44 +1,23 @@
-
 lista_tarefas = []
 lista_tarefas_concluidas = []
 
 class Tarefa:
-    id = None
-    descricao = None
-    prioridade = None ## 1- Alta 2 - Media 3 - Baixa
-    situacao = None
-
-def carregar_tarefas_teste():
-    t1 = Tarefa()
-    t1.id = 1
-    t1.descricao = "Estudar estruturas de dados em Python"
-    t1.prioridade = "1"
-    t1.situacao = "Pendente"
-
-    t2 = Tarefa()
-    t2.id = 2
-    t2.descricao = "Comprar café para o escritório"
-    t2.prioridade = "3"
-    t2.situacao = "Pendente"
-
-    t3 = Tarefa()
-    t3.id = 3
-    t3.descricao = "Refatorar função de cadastro de tarefas"
-    t3.prioridade = "2"
-    t3.situacao = "Concluída"
-
-    lista_tarefas.extend([t1, t2, t3])
+    def __init__(self, id, descricao, prioridade):
+        self.id = id
+        self.descricao = descricao
+        self.prioridade = prioridade  # 1- Alta, 2 - Média, 3 - Baixa
+        self.situacao = True          # True = Ativa, False = Concluída
 
 def nova_tarefa():
     print("*" * 40)
     print("Cadastro de nova tarefa\n")
 
-    tarefa = Tarefa()
-    tarefa.id = len(lista_tarefas) + 1
-    tarefa.descricao = input("Informe a descrição da tarefa: ")
-    tarefa.prioridade = input("Informe o valor de prioridade (1, 2, 3): ")
-    tarefa.situacao = True
+    proximo_id = len(lista_tarefas) + len(lista_tarefas_concluidas) + 1
     
+    descricao = input("Informe a descrição da tarefa: ")
+    prioridade = int(input("Informe o valor de prioridade (1 - Alta, 2 - Média, 3 - Baixa): "))
+    
+    tarefa = Tarefa(proximo_id, descricao, prioridade)
     lista_tarefas.append(tarefa)
 
     print("\nTarefa adicionada com sucesso!\n")
@@ -48,15 +27,16 @@ def visualizar_tarefa():
     print("Tarefas Cadastradas\n")
 
     if not lista_tarefas:
-        print("Nenhuma tarefa cadastrada.")
+        print("Nenhuma tarefa cadastrada.\n")
         return
     
     for tarefa in lista_tarefas:
-        print(f"ID: {tarefa.id:<5} | Descrição: {tarefa.descricao:<50} | Prioridade: {tarefa.situacao}")
+        status = "Ativa" if tarefa.situacao else "Concluída"
+        print(f"ID: {tarefa.id:<5} | Descrição: {tarefa.descricao:<20} | Prioridade: {tarefa.prioridade:<5} | Status: {status}")
     
-    print(" ")
+    print("\n")
         
-def  concluir_tarefa():
+def concluir_tarefa():
     print("*" * 40)
     print("Concluir Tarefas\n")
 
@@ -65,10 +45,12 @@ def  concluir_tarefa():
 
     for tarefa in lista_tarefas:
         if tarefa.id == tarefa_concluida:
-            print(f"Tarefa com ID {tarefa.id} alterada para concluída com sucesso!\n")
             tarefa.situacao = False
             encontrada = True
+            
             lista_tarefas_concluidas.append(tarefa)
+            lista_tarefas.remove(tarefa)
+            print(f"Tarefa com ID {tarefa.id} alterada para concluída com sucesso!\n")
             break
 
     if not encontrada:
@@ -76,44 +58,44 @@ def  concluir_tarefa():
 
 def reabrir_tarefa():
     print("*" * 40)
-    print("Concluir Tarefas\n")
+    print("Reabrir Tarefa\n")
 
-    tarefa = int(input("Informe o ID da tarefa que deseja reabrir: "))
+    tarefa_reabrir = int(input("Informe o ID da tarefa que deseja reabrir: "))
     encontrada = False
 
     for tarefa in lista_tarefas_concluidas:
-        if tarefa.id == tarefa:
-            print(f"Tarefa com ID {tarefa.id} alterada para reaberta com sucesso!\n")
-            tarefa.situacao = False
+        if tarefa.id == tarefa_reabrir:
+            tarefa.situacao = True
             encontrada = True
+            
             lista_tarefas.append(tarefa)
+            lista_tarefas_concluidas.remove(tarefa)
+            print(f"Tarefa com ID {tarefa.id} reaberta com sucesso!\n")
             break
 
     if not encontrada:
-        print("ID de tarefa inexistente!\n")
-
+        print("ID de tarefa inexistente nas concluídas!\n")
 
 def editar_tarefa():
     print("*" * 40)
     print("Editar Tarefas\n")
 
-    tarefa = int(input("Informe o ID da tarefa que deseja editar: "))
+    tarefa_editar = int(input("Informe o ID da tarefa que deseja editar: "))
     encontrada = False
 
     for tarefa in lista_tarefas:
-        if tarefa.id == tarefa:
-            print(f"ID: {tarefa.id:<5} | Descrição: {tarefa.descricao:<50} | Prioridade: {tarefa.situacao}")
-            descrição_nova = print(f"\nDescrição nova (0 para manter como está): \n")
+        if tarefa.id == tarefa_editar:
+            print(f"ID: {tarefa.id} | Descrição atual: {tarefa.descricao} | Prioridade atual: {tarefa.prioridade}")
+            
+            descricao_nova = input("\nDescrição nova (aperte Enter ou digite 0 para manter como está): ")
+            if descricao_nova and descricao_nova != '0':
+                tarefa.descricao = descricao_nova
 
-            if descrição_nova != '0':
-                tarefa.descricao = descrição_nova
+            prioridade_nova = input("Prioridade nova (aperte Enter ou digite 0 para manter como está): ")
+            if prioridade_nova and prioridade_nova != '0':
+                tarefa.prioridade = int(prioridade_nova)
 
-            prioridade_nova = print(f"\nPrioridade nova (0 para manter como está): \n")
-
-            if prioridade_nova != '0':
-                tarefa.prioridade = prioridade_nova
-
-            print(f"Tarefa com ID {tarefa.id} alterada para com sucesso!\n")
+            print(f"\nTarefa com ID {tarefa.id} alterada com sucesso!\n")
             encontrada = True
             break
 
@@ -127,7 +109,7 @@ while True:
     print("2 - Visualizar Tarefas")
     print("3 - Concluir Tarefas")
     print("4 - Reabrir Tarefa")
-    print("6 - Editar Tarefa")
+    print("5 - Editar Tarefa")
     print("0 - SAIR\n")
     
     resposta = int(input("Escolha a opção que deseja visualizar: "))
@@ -146,4 +128,5 @@ while True:
         case 0:
             print("Saindo do programa...")
             break
-
+        case _:
+            print("Opção inválida!\n")
